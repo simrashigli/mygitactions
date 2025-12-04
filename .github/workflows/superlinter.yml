@@ -1,17 +1,20 @@
-name: Super-Linter
+stages:
+  - build
+  - test
 
-on: push
+create_file:
+  image: alpine
+  stage: build
+  script:
+    - echo "building ..."
+    - mkdir build
+    - touch build/somefile.txt
+  artifacts:
+    paths:
+      - build/
 
-jobs:
-  super-lint:
-    name: Lint code base
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v2
-
-      - name: Run Super-Linter
-        uses: github/super-linter@v3
-        env:
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+test_file:
+  image: alpine
+  stage: test
+  script:
+    - test -f build/somefile.txt
